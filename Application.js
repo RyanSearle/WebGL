@@ -23,6 +23,82 @@
     //
     // Create buffer
     //
+
+    let hexVertices = [
+        // X, Y, Z
+        //Middle Top
+        0.0, 0.0, 0.5,  0.5, 0.0,0.2,
+
+        //F
+        -0.5, -0.866, 0.5 , 0.0, 0.0,0.5,
+
+        //A
+        -1.0, 0.0, 0.5 ,  0.3, 0.5,0.5,
+
+        //B
+        -0.5, 0.866, 0.5,  0.0, 0.0,0.5,
+
+        //C
+        0.5, 0.866, 0.5 , 0.3, 0.5,0.5,
+
+        //D
+        1.0, 0.0, 0.5  ,0.0, 0.0,0.5,
+
+        //E
+        0.5, -0.866, 0.5  ,0.3, 0.5,0.5,       
+
+        //Middle Bottom
+        0.0, 0.0, -0.5,  0.5, 0.0,0.2,
+
+        //F
+        -0.5, -0.866, -0.5 , 0.3, 0.5,0.5,
+
+        //A
+        -1.0, 0.0, -0.5 ,  0.1, 0.2,0.5,
+
+        //B
+        -0.5, 0.866, -0.5,  0.3, 0.5,0.5,
+
+        //C
+        0.5, 0.866, -0.5 , 0.1, 0.2,0.5,
+
+        //D
+        1.0, 0.0, -0.5  ,0.5, 0.0,0.2,
+
+        //E
+        0.5, -0.866, -0.5  ,0.1, 0.2,0.5,
+    ]
+
+    let hexIndices = [
+        //Top
+        0, 1, 6,
+        0, 2, 1,
+        0, 3, 2,
+        0, 4, 3, 
+        0, 5, 4,
+        0, 6, 5,
+        //Side
+        6, 1, 13,
+        1, 8, 13,
+        1, 2, 8,
+        2, 9, 8,
+        2, 3, 9,
+        3, 10, 9,
+        3, 4, 10,
+        4, 11, 10,
+        4, 5, 11,
+        5, 12, 11,
+        5, 6, 12,
+        6, 13, 12,
+        //Bottom
+        7, 13, 8,
+        7, 8, 9,
+        7, 9, 10,
+        7, 10, 11, 
+        7, 11, 12,
+        7, 12, 13,
+    ]
+
     let boxVertices =
         [ // X, Y, Z           R, G, B
             // Top
@@ -89,13 +165,21 @@
             22, 20, 23
         ];
 
-    let boxVertexBufferObject = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, boxVertexBufferObject);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(boxVertices), gl.STATIC_DRAW);
+    // let boxVertexBufferObject = gl.createBuffer();
+    // gl.bindBuffer(gl.ARRAY_BUFFER, boxVertexBufferObject);
+    // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(boxVertices), gl.STATIC_DRAW);
 
-    let boxIndexBufferObject = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, boxIndexBufferObject);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(boxIndices), gl.STATIC_DRAW);
+    // let boxIndexBufferObject = gl.createBuffer();
+    // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, boxIndexBufferObject);
+    // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(boxIndices), gl.STATIC_DRAW);
+
+    let hexVertexBufferObject = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, hexVertexBufferObject);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hexVertices), gl.STATIC_DRAW);
+
+    let hexIndexBufferObject = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, hexIndexBufferObject);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(hexIndices), gl.STATIC_DRAW);
     
     let positionAttribLocation = gl.getAttribLocation(program, 'vertPosition');
     let colorAttribLocation = gl.getAttribLocation(program, 'vertColor');
@@ -157,7 +241,7 @@
         gl.clearColor(0.75, 0.85, 0.8, 1.0);
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
-        gl.drawElements(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(gl.TRIANGLES, hexIndices.length, gl.UNSIGNED_SHORT, 0);
 
         requestAnimationFrame(loop);
     };
