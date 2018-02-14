@@ -1,5 +1,29 @@
 (function () {
     
+function scrollUpHandler(e) {
+    
+        // if (e.shiftKey){
+        //     if (e.deltaY < 0) {
+        //         if (grid.skew > 0.95) return true;
+        //         grid.skew = grid.skew + 0.01;
+        //     } else {
+        //         if (grid.skew < 0.05) return true;
+        //         grid.skew = grid.skew - 0.01 ;
+        //     }
+        //     grid.reDraw();
+        //     return true;
+        // }
+        
+        
+        // Increase / Decrease on logarithm scale
+        if (e.deltaY > 0) {
+            zIndex = zIndex + (zIndex * 0.1);
+        } else {
+            zIndex = zIndex - (zIndex * 0.1);
+        }
+        return true;
+    }
+
     let canvas = document.getElementById("c");
     let gl = canvas.getContext("webgl");
     
@@ -20,52 +44,52 @@
     
     let program = createProgram(gl,  vertexShader, fragmentShader);
 
+    var zIndex = 25;
+
+    document.addEventListener('wheel', scrollUpHandler);
+
     //
     // Create buffer
     //
     let hexVertices = [
-        // X, Y, Z
+        // X, Y, Z        R, G, B
         //Middle Top
-        0.0, 0.0, 0.5,  0.5, 0.0,0.2,
-
-        //F
-        -0.5, -0.866, 0.5 , 0.0, 0.0,0.5,
-
+        0.0, 0.0, 0.5,  0.1, 0.8,0.1,
+        -0.5, -0.866, 0.5 , 0.1, 0.8,0.1, //F
         //A
-        -1.0, 0.0, 0.5 ,  0.3, 0.5,0.5,
-
+        -1.0, 0.0, 0.5 ,  0.1, 0.8,0.1,
         //B
-        -0.5, 0.866, 0.5,  0.0, 0.0,0.5,
+        -0.5, 0.866, 0.5,  0.1, 0.8,0.1,
 
         //C
-        0.5, 0.866, 0.5 , 0.3, 0.5,0.5,
+        0.5, 0.866, 0.5 , 0.1, 0.8,0.1,
 
         //D
-        1.0, 0.0, 0.5  ,0.0, 0.0,0.5,
+        1.0, 0.0, 0.5  ,0.1, 0.8,0.1,
 
         //E
-        0.5, -0.866, 0.5  ,0.3, 0.5,0.5,       
+        0.5, -0.866, 0.5  ,0.1, 0.8,0.1,    
 
         //Middle Bottom
-        0.0, 0.0, -0.5,  0.5, 0.0,0.2,
+        0.0, 0.0, -0.5,  0.0, 0.0, 0.0,
 
         //F
-        -0.5, -0.866, -0.5 , 0.3, 0.5,0.5,
+        -0.5, -0.866, -0.5 , 0.0, 0.0, 0.0,
 
         //A
-        -1.0, 0.0, -0.5 ,  0.1, 0.2,0.5,
+        -1.0, 0.0, -0.5 , 0.0, 0.0, 0.0,
 
         //B
-        -0.5, 0.866, -0.5,  0.3, 0.5,0.5,
+        -0.5, 0.866, -0.5,  0.0, 0.0, 0.0,
 
         //C
-        0.5, 0.866, -0.5 , 0.1, 0.2,0.5,
+        0.5, 0.866, -0.5 , 0.0, 0.0, 0.0,
 
         //D
-        1.0, 0.0, -0.5  ,0.5, 0.0,0.2,
+        1.0, 0.0, -0.5  ,0.0, 0.0, 0.0,
 
         //E
-        0.5, -0.866, -0.5  ,0.1, 0.2,0.5,
+        0.5, -0.866, -0.5  ,0.0, 0.0, 0.0,
     ]
 
     let hexIndices = [
@@ -146,8 +170,8 @@
     let viewMatrix = new Float32Array(16);
     let projMatrix = new Float32Array(16);
     mat4.identity(worldMatrix);
-    mat4.lookAt(viewMatrix, [0, 5, 5], [0, 0, 0], [0, 0, 1]);
-    mat4.perspective(projMatrix, glMatrix.toRadian(90), canvas.width / canvas.height, 0.1, 1000.0);
+    mat4.lookAt(viewMatrix, [0, 0, zIndex], [-30, -15, 0], [0, 0, 1]);
+    mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.width / canvas.height, 0.1, 1000.0);
 
     gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
     gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
@@ -160,8 +184,8 @@
     // Main render loop
     //
 
-    // var angle = 0;
-    // var loop = function () {
+    var angle = 0;
+    var loop = function () {
         resize(canvas);
 
         // mat4.rotate(yRotationMatrix, identityMatrix, angle, [0, 1, 0]);
@@ -169,33 +193,39 @@
         // mat4.mul(worldMatrix, yRotationMatrix, xRotationMatrix);
         gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
+        mat4.lookAt(viewMatrix, [0, 0, zIndex], [-10, -10, zIndex - 20], [0, 0, 1]);
+        gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
+
+
         gl.clearColor(0.75, 0.85, 0.8, 1.0);
         gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 
-        gl.drawElements(gl.TRIANGLES, hexIndices.length, gl.UNSIGNED_SHORT, 0);
-
         var identityMatrix = new Float32Array(16);
-        mat4.identity(identityMatrix);
-        mat4.translate(worldMatrix, identityMatrix, [-1.5, -1.0, 0]);
-        gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
-        gl.drawElements(gl.TRIANGLES, hexIndices.length, gl.UNSIGNED_SHORT, 0);
+        for (var x = 60 - 1; x >= 0; x--) {
+            for (var y = 30 - 1; y >= 0; y--) {
 
-        mat4.identity(identityMatrix);
-        mat4.translate(worldMatrix, identityMatrix, [1.5, -1.0, 0]);
-        gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+                let xVal = -1 * x * (0.5+0.866);
+                let yVal = -2*y * 0.866;
 
-        gl.drawElements(gl.TRIANGLES, hexIndices.length, gl.UNSIGNED_SHORT, 0);
+                if(x % 2 === 0){
+                    yVal = yVal + 0.866;
+                }
 
-        mat4.identity(identityMatrix);
-        mat4.translate(worldMatrix, identityMatrix, [0, -2.0, 0]);
-        gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+                let vector = [xVal, yVal, 0];
 
-        gl.drawElements(gl.TRIANGLES, hexIndices.length, gl.UNSIGNED_SHORT, 0);
+                mat4.identity(identityMatrix);
+                mat4.translate(worldMatrix, identityMatrix, vector);
+                gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+                gl.drawElements(gl.TRIANGLES, hexIndices.length, gl.UNSIGNED_SHORT, 0);
+            }
 
-    //     requestAnimationFrame(loop);
-    // };
-    // requestAnimationFrame(loop);
+        }
+    
+
+        requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
 
     function createShader(gl, type, source) {
         let shader = gl.createShader(type);
@@ -239,4 +269,6 @@
         }
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     }
+
+    
 })();
