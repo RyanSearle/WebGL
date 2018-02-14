@@ -32,7 +32,7 @@ uniform mat4 mProj;
  
 void main() 
 {
-  fragColor = vertColor;
+  fragColor = vertPosition;
   gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
 }
 </script>
