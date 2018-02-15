@@ -24,6 +24,27 @@ function scrollUpHandler(e) {
         return true;
     }
 
+    function keyPressHandler(e){
+        console.log(e.key);
+
+        if(e.key === 'ArrowUp'){
+            yScroll += 1;
+            xScroll += 1;
+        }
+        if(e.key === 'ArrowDown'){
+            yScroll -= 1;
+            xScroll -= 1;
+        }
+        if(e.key === 'ArrowRight'){
+            xScroll += 1;
+            yScroll -= 1;
+        }
+        if(e.key === 'ArrowLeft'){
+            xScroll -= 1;
+            yScroll += 1;
+        }
+    }
+
     let canvas = document.getElementById("c");
     let gl = canvas.getContext("webgl");
     
@@ -44,9 +65,12 @@ function scrollUpHandler(e) {
     
     let program = createProgram(gl,  vertexShader, fragmentShader);
 
-    var zIndex = 25;
+    var zIndex = 30;
+    var xScroll = -20;
+    var yScroll = -20;
 
     document.addEventListener('wheel', scrollUpHandler);
+    document.addEventListener('keydown', keyPressHandler);
 
     //
     // Create buffer
@@ -54,42 +78,42 @@ function scrollUpHandler(e) {
     let hexVertices = [
         // X, Y, Z        R, G, B
         //Middle Top
-        0.0, 0.0, 0.5,  0.1, 0.8,0.1,
-        -0.5, -0.866, 0.5 , 0.1, 0.8,0.1, //F
+        0.0, 0.0, 0.5,  0.0, 0.8,0.0,
+        -0.5, -0.866, 0.5 , 0.1, 0.4,0.1, //F
         //A
-        -1.0, 0.0, 0.5 ,  0.1, 0.8,0.1,
+        -1.0, 0.0, 0.5 ,  0.1, 0.4,0.1,
         //B
-        -0.5, 0.866, 0.5,  0.1, 0.8,0.1,
+        -0.5, 0.866, 0.5,  0.1, 0.4,0.1,
 
         //C
-        0.5, 0.866, 0.5 , 0.1, 0.8,0.1,
+        0.5, 0.866, 0.5 , 0.1, 0.4,0.1,
 
         //D
-        1.0, 0.0, 0.5  ,0.1, 0.8,0.1,
+        1.0, 0.0, 0.5  ,0.1, 0.4,0.1,
 
         //E
-        0.5, -0.866, 0.5  ,0.1, 0.8,0.1,    
+        0.5, -0.866, 0.5  ,0.1, 0.4,0.1,    
 
         //Middle Bottom
-        0.0, 0.0, -0.5,  0.0, 0.0, 0.0,
+        0.0, 0.0, -0.5,  0.5, 0.2, 0.2,
 
         //F
-        -0.5, -0.866, -0.5 , 0.0, 0.0, 0.0,
+        -0.5, -0.866, -0.5 , 0.5, 0.2, 0.2,
 
         //A
-        -1.0, 0.0, -0.5 , 0.0, 0.0, 0.0,
+        -1.0, 0.0, -0.5 , 0.5, 0.2, 0.2,
 
         //B
-        -0.5, 0.866, -0.5,  0.0, 0.0, 0.0,
+        -0.5, 0.866, -0.5,  0.5, 0.2, 0.2,
 
         //C
-        0.5, 0.866, -0.5 , 0.0, 0.0, 0.0,
+        0.5, 0.866, -0.5 , 0.5, 0.2, 0.2,
 
         //D
-        1.0, 0.0, -0.5  ,0.0, 0.0, 0.0,
+        1.0, 0.0, -0.5  ,0.5, 0.2, 0.2,
 
         //E
-        0.5, -0.866, -0.5  ,0.0, 0.0, 0.0,
+        0.5, -0.866, -0.5  ,0.5, 0.2, 0.2,
     ]
 
     let hexIndices = [
@@ -170,16 +194,22 @@ function scrollUpHandler(e) {
     let viewMatrix = new Float32Array(16);
     let projMatrix = new Float32Array(16);
     mat4.identity(worldMatrix);
-    mat4.lookAt(viewMatrix, [0, 0, zIndex], [-30, -15, 0], [0, 0, 1]);
     mat4.perspective(projMatrix, glMatrix.toRadian(45), canvas.width / canvas.height, 0.1, 1000.0);
 
     gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-    gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
     gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 
     // let xRotationMatrix = new Float32Array(16);
     // let yRotationMatrix = new Float32Array(16);
     
+    //Hexagon Maths
+    let longDiameter = 2;
+    let longRadius = longDiameter / 2;
+    let shortDiameter = Math.sqrt(3) * longRadius;
+    let shortRadius = shortDiameter / 2;
+
+
+
     //
     // Main render loop
     //
@@ -193,7 +223,7 @@ function scrollUpHandler(e) {
         // mat4.mul(worldMatrix, yRotationMatrix, xRotationMatrix);
         gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
 
-        mat4.lookAt(viewMatrix, [0, 0, zIndex], [-10, -10, zIndex - 20], [0, 0, 1]);
+        mat4.lookAt(viewMatrix, [xScroll, yScroll, zIndex], [xScroll + zIndex, yScroll + zIndex, 0], [0, 0, 1]);
         gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
 
 
@@ -202,14 +232,14 @@ function scrollUpHandler(e) {
 
         var identityMatrix = new Float32Array(16);
 
-        for (var x = 60 - 1; x >= 0; x--) {
-            for (var y = 30 - 1; y >= 0; y--) {
+        for (var x = 20 - 1; x >= 0; x--) {
+            for (var y = 15 - 1; y >= 0; y--) {
 
-                let xVal = -1 * x * (0.5+0.866);
-                let yVal = -2*y * 0.866;
+                let xVal = x * (0.75 * longDiameter);
+                let yVal = y * shortDiameter;
 
                 if(x % 2 === 0){
-                    yVal = yVal + 0.866;
+                    yVal = yVal + shortRadius;
                 }
 
                 let vector = [xVal, yVal, 0];
