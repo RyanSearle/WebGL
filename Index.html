@@ -25,7 +25,9 @@
 <script id="2d-vertex-shader" type="notjs">
 attribute vec3 vertPosition;
 attribute vec3 vertColor;
+attribute vec3 a_normal;
 varying vec3 fragColor;
+varying vec3 v_normal;
 uniform mat4 mWorld;
 uniform mat4 mView;
 uniform mat4 mProj;
@@ -33,6 +35,7 @@ uniform mat4 mProj;
 void main() 
 {
   fragColor = vertColor;
+  v_normal = a_normal;
   gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
 }
 </script>
@@ -40,10 +43,19 @@ void main()
 <script id="2d-fragment-shader" type="notjs">
 precision mediump float;
 varying vec3 fragColor;
+varying vec3 v_normal;
  
+uniform vec3 u_reverseLightDirection;
+
 void main() 
 {
+
+  vec3 normal = normalize(v_normal);
+  float light = dot(normal, u_reverseLightDirection);
+
   gl_FragColor = vec4(fragColor, 1.0); 
+
+  gl_FragColor.rgb *= light;
 }
 </script>
 <script src="gl-matrix.js"></script>
