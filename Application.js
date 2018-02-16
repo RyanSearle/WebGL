@@ -28,20 +28,33 @@ function scrollUpHandler(e) {
         console.log(e.key);
 
         if(e.key === 'ArrowUp'){
-            yScroll += 1;
-            xScroll += 1;
+            upArrowPressed = true;
         }
         if(e.key === 'ArrowDown'){
-            yScroll -= 1;
-            xScroll -= 1;
+            downArrowPressed = true;
         }
         if(e.key === 'ArrowRight'){
-            xScroll += 1;
-            yScroll -= 1;
+            rightArrowPressed = true;
         }
         if(e.key === 'ArrowLeft'){
-            xScroll -= 1;
-            yScroll += 1;
+            leftArrowPressed = true;
+        }
+    }
+
+    function keyUpHandler(e){
+        console.log(e.key);
+
+        if(e.key === 'ArrowUp'){
+            upArrowPressed = false;
+        }
+        if(e.key === 'ArrowDown'){
+            downArrowPressed = false;
+        }
+        if(e.key === 'ArrowRight'){
+            rightArrowPressed = false;
+        }
+        if(e.key === 'ArrowLeft'){
+            leftArrowPressed = false;
         }
     }
 
@@ -71,6 +84,126 @@ function scrollUpHandler(e) {
 
     document.addEventListener('wheel', scrollUpHandler);
     document.addEventListener('keydown', keyPressHandler);
+    document.addEventListener('keyup', keyUpHandler);
+
+    var upArrowPressed = false;
+    var downArrowPressed = false;
+    var leftArrowPressed = false;
+    var rightArrowPressed = false;
+
+
+    const hexagonVertices = [
+        ////Top Area
+        //Top face
+        0.0, 0.0, 0.0, 0.0, 0.8, 0.0,
+        -0.5, -0.866, 0.0, 0.1, 0.4, 0.1,
+        0.5, -0.866, 0.0, 0.1, 0.4, 0.1,
+
+        //Top Left face
+        0.0, 0.0, 0.0, 0.0, 0.8, 0.0,
+        -1.0, 0.0, 0.0, 0.1, 0.4, 0.1,
+        -0.5, -0.866, 0.0, 0.1, 0.4, 0.1,
+
+        //Bottom Left face
+        0.0, 0.0, 0.0, 0.0, 0.8, 0.0,
+        -0.5, 0.866, 0.0, 0.1, 0.4, 0.1,
+        -1.0, 0.0, 0.0, 0.1, 0.4, 0.1,
+
+        //Bottom face
+        0.0, 0.0, 0.0, 0.0, 0.8, 0.0,
+        0.5, 0.866, 0.0, 0.1, 0.4, 0.1,
+        -0.5, 0.866, 0.0, 0.1, 0.4, 0.1,
+
+        //Bottom Right face
+        0.0, 0.0, 0.0, 0.0, 0.8, 0.0,
+        1.0, 0.0, 0.0, 0.1, 0.4, 0.1,
+        0.5, 0.866, 0.0, 0.1, 0.4, 0.1,
+
+        //Top Right face
+        0.0, 0.0, 0.0, 0.0, 0.8, 0.0,
+        0.5, -0.866, 0.0, 0.1, 0.4, 0.1,
+        1.0, 0.0, 0.0, 0.1, 0.4, 0.1,
+
+        ////Side Area
+        //Top face
+        0.5, -0.866, -1.0, 0.1, 0.4, 0.1, //-E
+        0.5, -0.866, 0.0, 0.1, 0.4, 0.1,  //E
+        -0.5, -0.866, 0.0, 0.1, 0.4, 0.1, //F
+        -0.5, -0.866, 0.0, 0.1, 0.4, 0.1, //F
+        -0.5, -0.866, -1.0, 0.1, 0.4, 0.1,//-F
+        0.5, -0.866, -1.0, 0.1, 0.4, 0.1, //E
+
+        //Top Left face
+        -0.5, -0.866, -1.0, 0.1, 0.4, 0.9,
+        -0.5, -0.866, 0.0, 0.1, 0.4, 0.9,
+        -1.0, 0.0, 0.0, 0.1, 0.4, 0.9,
+        -1.0, 0.0, 0.0, 0.1, 0.4, 0.9,
+        -1.0, 0.0, -1.0, 0.1, 0.4, 0.9,
+        -0.5, -0.866, 0.0, 0.1, 0.4, 0.9,
+
+        //Bottom Left face
+        -1.0, 0.0, -1.0, 0.1, 0.4, 0.1,
+        -1.0, 0.0, 0.0, 0.1, 0.4, 0.1,
+        -0.5, 0.866, 0.0, 0.1, 0.4, 0.1,
+        -0.5, 0.866, 0.0, 0.1, 0.4, 0.1,
+        -0.5, 0.866, -1.0, 0.1, 0.4, 0.1,
+        -1.0, 0.0, 0.0, 0.1, 0.4, 0.1,
+
+        //Bottom face
+        -0.5, 0.866, -1.0, 0.1, 0.4, 0.1,
+        -0.5, 0.866, 0.0, 0.1, 0.4, 0.1,
+        0.5, 0.866, 0.0, 0.1, 0.4, 0.1,
+        0.5, 0.866, 0.0, 0.1, 0.4, 0.1,
+        0.5, 0.866, -1.0, 0.1, 0.4, 0.1,
+        -0.5, 0.866, 0.0, 0.1, 0.4, 0.1,
+
+        //Bottom Right face
+        0.5, 0.866, -1.0, 0.1, 0.4, 0.1,
+        0.5, 0.866, 0.0, 0.1, 0.4, 0.1,
+        1.0, 0.0, 0.0, 0.1, 0.4, 0.1,
+        1.0, 0.0, 0.0, 0.1, 0.4, 0.1,
+        1.0, 0.0, -1.0, 0.1, 0.4, 0.1,
+        0.5, 0.866, 0.0, 0.1, 0.4, 0.1,
+
+        //Top Right face
+        1.0, 0.0, -1.0, 0.1, 0.4, 0.1,
+        1.0, 0.0, 0.0, 0.1, 0.4, 0.1,
+        0.5, -0.866, 0.0, 0.1, 0.4, 0.1,
+        0.5, -0.866, 0.0, 0.1, 0.4, 0.1,
+        0.5, -0.866, -1.0, 0.1, 0.4, 0.1,
+        1.0, 0.0, 0.0, 0.1, 0.4, 0.1,
+
+        ////Bottom Area
+        //Top Face
+        0.0, 0.0, -1.0, 0.0, 0.8, 0.0,
+        0.5, -0.866, -1.0, 0.1, 0.4, 0.1,
+        -0.5, -0.866, -1.0, 0.1, 0.4, 0.1,
+
+        //Top Left face
+        0.0, 0.0, -1.0, 0.0, 0.8, 0.0,
+        -0.5, -0.866, -1.0, 0.1, 0.4, 0.1,
+        -1.0, 0.0, -1.0, 0.1, 0.4, 0.1,
+
+        //Bottom Left face
+        0.0, 0.0, -1.0, 0.0, 0.8, 0.0,
+        -1.0, 0.0, -1.0, 0.1, 0.4, 0.1,
+        -0.5, 0.866, -1.0, 0.1, 0.4, 0.1,
+
+        //Bottom face
+        0.0, 0.0, -1.0, 0.0, 0.8, 0.0,
+        -0.5, 0.866, -1.0, 0.1, 0.4, 0.1,
+        0.5, 0.866, -1.0, 0.1, 0.4, 0.1,
+
+        //Bottom Right face
+        0.0, 0.0, -1.0, 0.0, 0.8, 0.0,
+        0.5, 0.866, -1.0, 0.1, 0.4, 0.1,
+        1.0, 0.0, -1.0, 0.1, 0.4, 0.1,
+
+        //Top Right face
+        0.0, 0.0, -1.0, 0.0, 0.8, 0.0,
+        1.0, 0.0, -1.0, 0.1, 0.4, 0.1,
+        0.5, -0.866, -1.0, 0.1, 0.4, 0.1,
+    ];
 
     //
     // Create buffer
@@ -78,8 +211,8 @@ function scrollUpHandler(e) {
     let hexVertices = [
         // X, Y, Z        R, G, B
         //Middle Top
-        0.0, 0.0, 0.5,  0.0, 0.8,0.0,
-        -0.5, -0.866, 0.5 , 0.1, 0.4,0.1, //F
+        0.0, 0.0, 0.5,  0.0, 0.8, 0.0,
+        -0.5, -0.866, 0.5, 0.1, 0.4, 0.1, //F
         //A
         -1.0, 0.0, 0.5 ,  0.1, 0.4,0.1,
         //B
@@ -156,11 +289,11 @@ function scrollUpHandler(e) {
 
     let hexVertexBufferObject = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, hexVertexBufferObject);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hexVertices), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(hexagonVertices), gl.STATIC_DRAW);
 
-    let hexIndexBufferObject = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, hexIndexBufferObject);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(hexIndices), gl.STATIC_DRAW);
+    // let hexIndexBufferObject = gl.createBuffer();
+    // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, hexIndexBufferObject);
+    // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(hexIndices), gl.STATIC_DRAW);
     
     let positionAttribLocation = gl.getAttribLocation(program, 'vertPosition');
     let colorAttribLocation = gl.getAttribLocation(program, 'vertColor');
@@ -208,7 +341,7 @@ function scrollUpHandler(e) {
     let shortDiameter = Math.sqrt(3) * longRadius;
     let shortRadius = shortDiameter / 2;
 
-
+    let scrollRate = 0.2;
 
     //
     // Main render loop
@@ -217,6 +350,23 @@ function scrollUpHandler(e) {
     var angle = 0;
     var loop = function () {
         resize(canvas);
+
+        if(upArrowPressed){
+            yScroll += scrollRate;
+            xScroll += scrollRate;
+        }
+        if(leftArrowPressed){
+            yScroll += scrollRate;
+            xScroll -= scrollRate;
+        }
+        if(rightArrowPressed){
+            yScroll -= scrollRate;
+            xScroll += scrollRate;
+        }
+        if(downArrowPressed){
+            yScroll -= scrollRate;
+            xScroll -= scrollRate;
+        }
 
         // mat4.rotate(yRotationMatrix, identityMatrix, angle, [0, 1, 0]);
         // mat4.rotate(xRotationMatrix, identityMatrix, angle / 4, [1, 0, 0]);
@@ -247,7 +397,7 @@ function scrollUpHandler(e) {
                 mat4.identity(identityMatrix);
                 mat4.translate(worldMatrix, identityMatrix, vector);
                 gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-                gl.drawElements(gl.TRIANGLES, hexIndices.length, gl.UNSIGNED_SHORT, 0);
+                gl.drawArrays(gl.TRIANGLES, 0, hexagonVertices.length / 6);
             }
 
         }
