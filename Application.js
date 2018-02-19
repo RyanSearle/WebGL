@@ -1,4 +1,79 @@
 (function () {
+
+    function gameState(){
+
+        let proto = {
+        }
+
+        proto.landscape = landscape();
+
+        return proto;
+    }
+
+    function landscape(){
+
+        let proto = {
+            gameSpace:[],
+            xSize: 30,
+            ySize: 30,
+            zSize: 5,
+            forEach: function(action){
+                for (var x = this.xSize - 1; x >= 0; x--) {
+                    for (var y = this.ySize - 1; y >= 0; y--) {
+                        for (var z = this.zSize - 1; z >= 0; z--) {
+                            action(x, y, z);
+                        }
+                    }
+                }
+            }
+        }
+
+        function initGameSpace(){
+            for (let x = proto.xSize - 1; x >= 0; x--) {
+                for (var y = proto.ySize - 1; y >= 0; y--) {
+                    for (var z = proto.zSize - 1; z >= 0; z--) {
+
+                        //Initialise arrays where needed
+                        if(!proto.gameSpace[x]){
+                            proto.gameSpace[x] = [];
+                        }
+                        if(!proto.gameSpace[x][y]){
+                            proto.gameSpace[x][y] = [];
+                        }
+                        if(!proto.gameSpace[x][y][z]){
+                            proto.gameSpace[x][y][z] = [];
+                        }
+
+                        proto.gameSpace[x][y][z] = tileGenerationRule(x,y,z);
+                    }    
+                }
+            }
+        }
+
+        function tileGenerationRule(x,y,z){
+            if(z == 0){
+                return tile(true);
+            }
+            // if(z == 1 && x == 2){
+            //     return tile(true);
+            // }
+            return tile(false);
+        }
+
+        initGameSpace();
+
+        return Object.create(proto);
+    }
+
+    function tile(visible){
+
+        let proto = {
+            visible: visible
+        }
+
+        return Object.create(proto);
+    }
+
     
 function scrollUpHandler(e) {
     
@@ -91,6 +166,7 @@ function scrollUpHandler(e) {
     var leftArrowPressed = false;
     var rightArrowPressed = false;
 
+    var gameState = gameState();
 
     const hexagonVertices = [ //X, Y, X, R, G, B, N(X, Y, Z)
         ////Top Area
@@ -395,26 +471,23 @@ function scrollUpHandler(e) {
 
         var identityMatrix = new Float32Array(16);
 
-        for (var x = 20 - 1; x >= 0; x--) {
-            for (var y = 15 - 1; y >= 0; y--) {
-
+        gameState.landscape.forEach(function(x, y, z){
+            if(gameState.landscape.gameSpace[x][y][z].visible){
                 let xVal = x * (0.75 * longDiameter);
                 let yVal = y * shortDiameter;
+                let zVal = z * longRadius;
 
                 if(x % 2 === 0){
                     yVal = yVal + shortRadius;
                 }
 
-                let vector = [xVal, yVal, 0];
-
+                let vector = [xVal, yVal, zVal];
                 mat4.identity(identityMatrix);
                 mat4.translate(worldMatrix, identityMatrix, vector);
                 gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
                 gl.drawArrays(gl.TRIANGLES, 0, hexagonVertices.length / 9);
             }
-
-        }
-    
+        });
 
         requestAnimationFrame(loop);
     };
