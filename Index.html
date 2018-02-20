@@ -39,6 +39,7 @@ void main()
   gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
 }
 </script>
+
 <!--Fragment Shader-->
 <script id="2d-fragment-shader" type="notjs">
 precision mediump float;
@@ -58,6 +59,29 @@ void main()
   gl_FragColor.rgb *= light;
 }
 </script>
+
+<script id="object-picking-vertex-shader" type="notjs">
+attribute vec3 vertPosition;
+uniform mat4 mWorld;
+uniform mat4 mView;
+uniform mat4 mProj;
+ 
+void main() 
+{
+  gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
+}
+</script>
+
+<script id="object-picking-fragment-shader" type="notjs">
+precision mediump float;
+uniform vec3 vertColor;
+
+void main() 
+{
+  gl_FragColor = vec4(vertColor, 1.0); 
+}
+</script>
+
 <script src="gl-matrix.js"></script>
 <script src="Application.js"></script>
 </html>
